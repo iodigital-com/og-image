@@ -1,4 +1,4 @@
-import type { ParsedRequest, FileType } from "../api/_lib/types";
+import type { ParsedRequest, FileType, BlendTheme } from "../api/_lib/types";
 const { H, R, copee } = window as any;
 let timeout = -1;
 
@@ -133,6 +133,12 @@ const fileTypeOptions: DropdownOption[] = [
   { text: "JPEG", value: "jpeg" },
 ];
 
+const blendThemeOptions: DropdownOption[] = [
+  { text: "Blue", value: "blue" },
+  { text: "Orange", value: "orange" },
+  { text: "Rouge", value: "rouge" },
+];
+
 const teaserImagePlaceholder =
   "https://techhub.iodigital.com/iO-technology-blog1.png";
 
@@ -165,6 +171,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
   };
   const {
     fileType = "png",
+    blendTheme = "blue",
     domain = "tech_hub",
     title = "A title with an _emphasized_ part",
     author = "Author Name",
@@ -179,6 +186,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
 
   const url = new URL(window.location.origin);
   url.pathname = `${encodeURIComponent(title)}.${fileType}`;
+  blendTheme?.length && url.searchParams.append("blendTheme", blendTheme);
   domain?.length && url.searchParams.append("domain", domain);
   teaserImage?.length && url.searchParams.append("teaserImage", teaserImage);
   author?.length && url.searchParams.append("author", author);
@@ -199,6 +207,14 @@ const App = (_: any, state: AppState, setState: SetState) => {
             options: fileTypeOptions,
             value: fileType,
             onchange: (val: FileType) => setLoadingState({ fileType: val }),
+          }),
+        }),
+        H(Field, {
+          label: "Blend theme",
+          input: H(Dropdown, {
+            options: blendThemeOptions,
+            value: blendTheme,
+            onchange: (val: BlendTheme) => setLoadingState({ blendTheme: val }),
           }),
         }),
         H(Field, {

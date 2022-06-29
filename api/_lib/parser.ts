@@ -5,7 +5,8 @@ import { ParsedRequest } from "./types";
 export function parseRequest(req: IncomingMessage) {
   console.log("HTTP " + req.url);
   const { pathname, query } = parse(req.url || "/", true);
-  const { domain, teaserImage, author, authorImage, date } = query || {};
+  const { blendTheme, domain, teaserImage, author, authorImage, date } =
+    query || {};
 
   const arr = (pathname || "/").slice(1).split(".");
   let extension = "";
@@ -21,6 +22,7 @@ export function parseRequest(req: IncomingMessage) {
 
   const parsedRequest: ParsedRequest = {
     fileType: extension === "jpeg" ? extension : "png",
+    blendTheme: blendTheme as ParsedRequest["blendTheme"],
     domain: domain as ParsedRequest["domain"],
     title: decodeURIComponent(title),
     teaserImage: teaserImage as ParsedRequest["teaserImage"],

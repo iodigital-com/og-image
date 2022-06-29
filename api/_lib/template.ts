@@ -1,10 +1,20 @@
 import { readFileSync } from "fs";
 import { marked } from "marked";
 import { sanitizeHtml } from "./sanitizer";
-import { ParsedRequest } from "./types";
+import { BlendTheme, ParsedRequest } from "./types";
 const twemoji = require("twemoji");
 const twOptions = { folder: "svg", ext: ".svg" };
 const emojify = (title: string) => twemoji.parse(title, twOptions);
+
+const blendBlue = readFileSync(
+  `${__dirname}/../_blends/io-blend-blue.jpg`
+).toString("base64");
+const blendOrange = readFileSync(
+  `${__dirname}/../_blends/io-blend-orange.jpg`
+).toString("base64");
+const blendRouge = readFileSync(
+  `${__dirname}/../_blends/io-blend-rouge.jpg`
+).toString("base64");
 
 const regular = readFileSync(
   `${__dirname}/../_fonts/TTCommonsPro-Regular.woff2`
@@ -23,10 +33,21 @@ const italicLight = readFileSync(
   `${__dirname}/../_fonts/Reckless-LightItalic.woff2`
 ).toString("base64");
 
-function getCss() {
+const getBlendFile = (blend: BlendTheme = "blue") => {
+  switch (blend) {
+    default:
+    case "blue":
+      return blendBlue;
+    case "orange":
+      return blendOrange;
+    case "rouge":
+      return blendRouge;
+  }
+};
+
+function getCss(blendTheme: BlendTheme = "blue") {
+  const blendFile = getBlendFile(blendTheme);
   const baseFontSize = 100;
-  let background = "white";
-  let foreground = "white";
 
   return `
     @font-face {
@@ -69,8 +90,8 @@ function getCss() {
     }
 
     body {
-        background: ${background};
-        background-image: url('http://localhost:3000/io-blend-blue.jpg');
+        background: white;
+        background-image: url("data:image/jpg;base64,${blendFile}");
         background-repeat: no-repeat;
         background-size: cover;
         height: 100vh;
@@ -107,7 +128,7 @@ function getCss() {
         font-size: ${`${baseFontSize * 0.9}`}px;
         font-style: normal;
         font-weight: 500;
-        color: ${foreground};
+        color: white;
     }
 
     .aside__image {
@@ -150,7 +171,7 @@ function getCss() {
         font-size: ${`${baseFontSize * 1.25}`}px;
         font-style: normal;
         font-weight: 500;
-        color: ${foreground};
+        color: white;
         margin: 0;
         margin-top: auto;
         padding: 0;
@@ -176,7 +197,7 @@ function getCss() {
         font-family: 'Reckless', sans-serif;
         font-size: ${`${baseFontSize * 0.8}`}px;
         font-style: normal;
-        color: ${foreground};
+        color: white;
     }
 
     .author {
@@ -199,13 +220,14 @@ function getCss() {
         font-family: 'TTCommonsPro', sans-serif;
         font-size: ${`${baseFontSize * 0.8}`}px;
         font-style: normal;
-        color: ${foreground};
+        color: white;
     }
     `;
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { domain, title, teaserImage, author, authorImage, date } = parsedReq;
+  const { blendTheme, domain, title, teaserImage, author, authorImage, date } =
+    parsedReq;
 
   return `<!DOCTYPE html>
 <html>
@@ -213,7 +235,7 @@ export function getHtml(parsedReq: ParsedRequest) {
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        ${getCss()}
+        ${getCss(blendTheme)}
     </style>
     <body>
         <aside class="aside">
