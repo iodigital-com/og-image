@@ -1,146 +1,254 @@
+import { readFileSync } from "fs";
+import { marked } from "marked";
+import { sanitizeHtml } from "./sanitizer";
+import { ParsedRequest } from "./types";
+const twemoji = require("twemoji");
+const twOptions = { folder: "svg", ext: ".svg" };
+const emojify = (title: string) => twemoji.parse(title, twOptions);
 
-import { readFileSync } from 'fs';
-import { marked } from 'marked';
-import { sanitizeHtml } from './sanitizer';
-import { ParsedRequest } from './types';
-const twemoji = require('twemoji');
-const twOptions = { folder: 'svg', ext: '.svg' };
-const emojify = (text: string) => twemoji.parse(text, twOptions);
+const regular = readFileSync(
+  `${__dirname}/../_fonts/TTCommonsPro-Regular.woff2`
+).toString("base64");
+const medium = readFileSync(
+  `${__dirname}/../_fonts/TTCommonsPro-Medium.woff2`
+).toString("base64");
+const bold = readFileSync(
+  `${__dirname}/../_fonts/TTCommonsPro-Bold.woff2`
+).toString("base64");
+const italic = readFileSync(
+  `${__dirname}/../_fonts/Reckless-RegularItalic.woff2`
+).toString("base64");
 
-const rglr = readFileSync(`${__dirname}/../_fonts/Inter-Regular.woff2`).toString('base64');
-const bold = readFileSync(`${__dirname}/../_fonts/Inter-Bold.woff2`).toString('base64');
-const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString('base64');
+const italicLight = readFileSync(
+  `${__dirname}/../_fonts/Reckless-LightItalic.woff2`
+).toString("base64");
 
-function getCss(theme: string, fontSize: string) {
-    let background = 'white';
-    let foreground = 'black';
-    let radial = 'lightgray';
+function getCss() {
+  const baseFontSize = 100;
+  let background = "white";
+  let foreground = "white";
 
-    if (theme === 'dark') {
-        background = 'black';
-        foreground = 'white';
-        radial = 'dimgray';
-    }
-    return `
+  return `
     @font-face {
-        font-family: 'Inter';
-        font-style:  normal;
-        font-weight: normal;
-        src: url(data:font/woff2;charset=utf-8;base64,${rglr}) format('woff2');
-    }
-
-    @font-face {
-        font-family: 'Inter';
-        font-style:  normal;
-        font-weight: bold;
-        src: url(data:font/woff2;charset=utf-8;base64,${bold}) format('woff2');
-    }
-
-    @font-face {
-        font-family: 'Vera';
+        font-family: 'TTCommonsPro';
+        src: url(data:font/woff2;charset=utf-8;base64,${regular})  format("woff2");
         font-style: normal;
-        font-weight: normal;
-        src: url(data:font/woff2;charset=utf-8;base64,${mono})  format("woff2");
-      }
+        font-weight: 400;
+    }
+
+    @font-face {
+        font-family: 'TTCommonsPro';
+        src: url(data:font/woff2;charset=utf-8;base64,${medium})  format("woff2");
+        font-style: normal;
+        font-weight: 500;
+    }
+
+    @font-face {
+        font-family: 'TTCommonsPro';
+        src: url(data:font/woff2;charset=utf-8;base64,${bold})  format("woff2");
+        font-style: normal;
+        font-weight: 700;
+    }
+
+    @font-face {
+        font-family: 'Reckless';
+        src: url(data:font/woff2;charset=utf-8;base64,${italic})  format("woff2");
+        font-weight: 300;
+    }
+
+    @font-face {
+        font-family: 'Reckless';
+        src: url(data:font/woff2;charset=utf-8;base64,${italicLight})  format("woff2");
+        font-weight: 400;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
     body {
         background: ${background};
-        background-image: radial-gradient(circle at 25px 25px, ${radial} 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${radial} 2%, transparent 0%);
-        background-size: 100px 100px;
+        background-image: url('http://localhost:3000/io-blend-blue.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
         height: 100vh;
+        width: 100vh;
         display: flex;
-        text-align: center;
-        align-items: center;
-        justify-content: center;
+        align-items: stretch;
+        justify-content: stretch;
+        font-family: 'TTCommonsPro', sans-serif;
+        font-weight: 500;
     }
 
-    code {
-        color: #D400FF;
-        font-family: 'Vera';
-        white-space: pre-wrap;
-        letter-spacing: -5px;
-    }
-
-    code:before, code:after {
-        content: '\`';
-    }
-
-    .logo-wrapper {
+    .aside {
         display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex: 1;
+        max-width: 35vw;
+    }
+
+    .aside_logo {
+      width: 5vw;
+    }
+
+    .aside__header {
+        display: flex;
+        flex-direction: row-reverse;
         align-items: center;
-        align-content: center;
-        justify-content: center;
-        justify-items: center;
+        gap: 1vw;
+        padding: 5vw;
     }
 
-    .logo {
-        margin: 0 75px;
+    .aside__heading {
+        font-family: 'TTCommonsPro', sans-serif;
+        font-size: ${`${baseFontSize * 0.9}`}px;
+        font-style: normal;
+        font-weight: 500;
+        color: ${foreground};
     }
 
-    .plus {
-        color: #BBB;
-        font-family: Times New Roman, Verdana;
-        font-size: 100px;
+    .aside__image {
+      flex: 1;
+      width: 35vw;
+      max-height: 35vw;
+      padding: 5vw;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-top-right-radius: 100%;
     }
 
-    .spacer {
-        margin: 150px;
+    .main {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        gap: 1vw;
+        height: 100vh;
+        min-width: 65vw;
+        max-width: 65vw;
+        width: 65vw;
+        flex: 1;
+        padding: 5vw;
     }
 
-    .emoji {
-        height: 1em;
-        width: 1em;
-        margin: 0 .05em 0 .1em;
-        vertical-align: -0.1em;
+    main::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: white;
+        opacity: 0.3;
     }
-    
-    .heading {
-        font-family: 'Inter', sans-serif;
-        font-size: ${sanitizeHtml(fontSize)};
+
+    .title {
+        font-family: 'TTCommonsPro', sans-serif;
+        font-size: ${`${baseFontSize * 1.25}`}px;
+        font-style: normal;
+        font-weight: 500;
+        color: ${foreground};
+        margin: 0;
+        margin-top: auto;
+        padding: 0;
+        hyphens: auto;
+        overflow: hidden;
+        title-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .title img {
+      height: ${`${baseFontSize * 1.25}`}px;
+    }
+
+    .title em,
+    .title strong {
+        font-family: 'Reckless', sans-serif;
+    }
+
+    .date {
+        font-family: 'Reckless', sans-serif;
+        font-size: ${`${baseFontSize * 0.8}`}px;
         font-style: normal;
         color: ${foreground};
-        line-height: 1.8;
-    }`;
+    }
+
+    .author {
+        position: absolute;
+        top: 5vw;
+        right: 5vw;
+        display: flex;
+        align-items: center;
+        gap: 1vw;
+    }
+
+    .author__image {
+        width: 8vw;
+        height: 8vw;
+        object-fit: cover;
+        border-radius: 100%;
+    }
+
+    .author__name {
+        font-family: 'TTCommonsPro', sans-serif;
+        font-size: ${`${baseFontSize * 0.8}`}px;
+        font-style: normal;
+        color: ${foreground};
+    }
+    `;
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-    const { text, theme, md, fontSize, images, widths, heights } = parsedReq;
-    return `<!DOCTYPE html>
+  const { domain, title, teaserImage, author, authorImage, date } = parsedReq;
+
+  return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        ${getCss(theme, fontSize)}
+        ${getCss()}
     </style>
     <body>
-        <div>
-            <div class="spacer">
-            <div class="logo-wrapper">
-                ${images.map((img, i) =>
-                    getPlusSign(i) + getImage(img, widths[i], heights[i])
-                ).join('')}
+        <aside class="aside">
+            <div class="aside__header">
+                ${domain ? `<p class="aside__heading">${domain}</p>` : ""}
+                <svg class="aside__logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 137.89 95.31"><defs><style>.cls-1{fill:#fff}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Lager_1" data-name="Lager 1"><path class="cls-1" d="M92.17 26.73a22.86 22.86 0 1 1-22.86 22.86 22.89 22.89 0 0 1 22.86-22.86m0-22.87a45.73 45.73 0 1 0 45.72 45.73A45.74 45.74 0 0 0 92.17 3.86ZM21.54 35.06 0 83.44l24.26 10.8L35 70.12a26.56 26.56 0 0 0-13.46-35.06ZM8.08 0a26.56 26.56 0 0 0 13.46 35.06l10.8-24.26Z"/></g></g></svg>
             </div>
-            <div class="spacer">
-            <div class="heading">${emojify(
-                md ? marked(text) : sanitizeHtml(text)
-            )}
+            ${teaserImage ? getImage(teaserImage, "aside__image") : ""}
+        </aside>
+        <main class="main">
+            <h1 class="title">
+            ${emojify(marked(title))}
+            </h1>
+            ${
+              date
+                ? `<time class="date" date="${new Date(
+                    date
+                  )}">${new Intl.DateTimeFormat("en").format(
+                    new Date(date)
+                  )}</time>`
+                : ""
+            }
+            <div class="author">
+             ${authorImage ? getImage(authorImage, "author__image") : ""}
+             ${author ? `<p class="author__name">${author}</p>` : ""}
             </div>
-        </div>
+        </main>
     </body>
 </html>`;
 }
 
-function getImage(src: string, width ='auto', height = '225') {
-    return `<img
-        class="logo"
+function getImage(src: string, className?: string) {
+  return `<img
+        class="${className}"
         alt="Generated Image"
         src="${sanitizeHtml(src)}"
-        width="${sanitizeHtml(width)}"
-        height="${sanitizeHtml(height)}"
-    />`
-}
-
-function getPlusSign(i: number) {
-    return i === 0 ? '' : '<div class="plus">+</div>';
+    />`;
 }
