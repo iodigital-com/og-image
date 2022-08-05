@@ -10,4 +10,5 @@ export interface ParsedRequest {
   author?: string;
   authorImage?: string;
   date?: string;
+  locale?: string;
 }

@@ -222,7 +222,7 @@ function getCss(blendTheme: BlendTheme = "blue") {
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { blendTheme, domain, title, teaserImage, author, authorImage, date } =
+  const { blendTheme, domain, title, teaserImage, author, authorImage, date, locale } =
     parsedReq;
 
   return `<!DOCTYPE html>
@@ -249,7 +249,7 @@ export function getHtml(parsedReq: ParsedRequest) {
               date
                 ? `<time class="date" date="${new Date(
                     date
-                  )}">${new Intl.DateTimeFormat("en").format(
+                  )}">${new Intl.DateTimeFormat(locale).format(
                     new Date(date)
                   )}</time>`
                 : ""
