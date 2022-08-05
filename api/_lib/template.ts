@@ -111,13 +111,9 @@ function getCss(blendTheme: BlendTheme = "blue") {
         max-width: 35vw;
     }
 
-    .aside_logo {
-      width: 5vw;
-    }
-
     .aside__header {
         display: flex;
-        flex-direction: row-reverse;
+        flex-direction: row;
         align-items: center;
         gap: 1vw;
         padding: 5vw;
@@ -240,8 +236,8 @@ export function getHtml(parsedReq: ParsedRequest) {
     <body>
         <aside class="aside">
             <div class="aside__header">
-                ${domain ? `<p class="aside__heading">${domain}</p>` : ""}
-                <svg class="aside__logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 137.89 95.31"><defs><style>.cls-1{fill:#fff}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Lager_1" data-name="Lager 1"><path class="cls-1" d="M92.17 26.73a22.86 22.86 0 1 1-22.86 22.86 22.89 22.89 0 0 1 22.86-22.86m0-22.87a45.73 45.73 0 1 0 45.72 45.73A45.74 45.74 0 0 0 92.17 3.86ZM21.54 35.06 0 83.44l24.26 10.8L35 70.12a26.56 26.56 0 0 0-13.46-35.06ZM8.08 0a26.56 26.56 0 0 0 13.46 35.06l10.8-24.26Z"/></g></g></svg>
+              <svg class="aside__logo" xmlns="http://www.w3.org/2000/svg" width="50%" viewBox="0 0 137.89 95.31"><defs><style>.cls-1{fill:#fff}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Lager_1" data-name="Lager 1"><path class="cls-1" d="M92.17 26.73a22.86 22.86 0 1 1-22.86 22.86 22.89 22.89 0 0 1 22.86-22.86m0-22.87a45.73 45.73 0 1 0 45.72 45.73A45.74 45.74 0 0 0 92.17 3.86ZM21.54 35.06 0 83.44l24.26 10.8L35 70.12a26.56 26.56 0 0 0-13.46-35.06ZM8.08 0a26.56 26.56 0 0 0 13.46 35.06l10.8-24.26Z"/></g></g></svg>
+              ${domain ? `<p class="aside__heading">${domain}</p>` : ""}
             </div>
             ${teaserImage ? getImage(teaserImage, "aside__image") : ""}
         </aside>
