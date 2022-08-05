@@ -5,7 +5,7 @@ import { ParsedRequest } from "./types";
 export function parseRequest(req: IncomingMessage) {
   console.log("HTTP " + req.url);
   const { pathname, query } = parse(req.url || "/", true);
-  const { blendTheme, domain, teaserImage, author, authorImage, date } =
+  const { blendTheme, domain, teaserImage, author, authorImage, date, locale } =
     query || {};
 
   const arr = (pathname || "/").slice(1).split(".");
@@ -29,6 +29,7 @@ export function parseRequest(req: IncomingMessage) {
     author: author as ParsedRequest["author"],
     authorImage: authorImage as ParsedRequest["authorImage"],
     date: date as ParsedRequest["date"],
+    locale: locale as ParsedRequest["locale"] || 'en',
   };
   return parsedRequest;
 }
