@@ -48,6 +48,8 @@ const getBlendFile = (blend: BlendTheme = "blue") => {
 function getCss(blendTheme: BlendTheme = "blue") {
   const blendFile = getBlendFile(blendTheme);
   const baseFontSize = 100;
+  const marginDefault = '4vw';
+  const colorLight = '#676767';
 
   return `
     @font-face {
@@ -91,86 +93,68 @@ function getCss(blendTheme: BlendTheme = "blue") {
 
     body {
         background: white;
-        background-image: url("data:image/jpg;base64,${blendFile}");
-        background-repeat: no-repeat;
-        background-size: cover;
         height: 100vh;
-        width: 100vh;
-        display: flex;
-        align-items: stretch;
-        justify-content: stretch;
-        font-family: 'TTCommonsPro', sans-serif;
-        font-weight: 500;
-    }
-
-    .aside {
+        width: 100vw;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        flex: 1;
-        max-width: 35vw;
+        font-family: 'TTCommonsPro', sans-serif;
+        font-weight: 500;
+        color: #000;
     }
 
-    .aside__header {
+    .header {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 1vw;
-        padding: 5vw;
+        gap: 2vw;
+        padding: ${marginDefault};
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: ${marginDefault};
+      right: ${marginDefault};
+      height: 2vh;
+      background-image: url("data:image/jpg;base64,${blendFile}");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .header__logo {
+      width: 8vw;
     }
 
-    .aside__heading {
-        font-family: 'TTCommonsPro', sans-serif;
-        font-size: ${`${baseFontSize * 0.9}`}px;
-        font-style: normal;
-        font-weight: 500;
-        color: white;
+    .header__title {
+      font-size: ${`${baseFontSize * 0.6}`}px;
     }
 
-    .aside__image {
-      flex: 1;
+    .teaserImage {
+      position: absolute;
+      right: ${marginDefault};
+      bottom: ${marginDefault};
       width: 35vw;
       max-height: 35vw;
-      padding: 5vw;
       aspect-ratio: 1/1;
       object-fit: cover;
-      border-top-right-radius: 100%;
+      border-top-left-radius: 100%;
     }
 
     .main {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: stretch;
-        gap: 1vw;
-        height: 100vh;
-        min-width: 65vw;
-        max-width: 65vw;
-        width: 65vw;
-        flex: 1;
-        padding: 5vw;
-    }
-
-    main::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background: white;
-        opacity: 0.3;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 75vw;
+      max-width: 75vw;
+      width: 75vw;
+      flex: 1;
+      padding: 0 ${marginDefault} ${marginDefault} ${marginDefault};
     }
 
     .title {
-        font-family: 'TTCommonsPro', sans-serif;
-        font-size: ${`${baseFontSize * 1.25}`}px;
-        font-style: normal;
-        font-weight: 500;
-        color: white;
-        margin: 0;
-        margin-top: auto;
-        padding: 0;
+        font-size: ${`${baseFontSize * 1.2}`}px;
+        font-weight: 700;
         hyphens: auto;
         overflow: hidden;
         title-overflow: ellipsis;
@@ -181,7 +165,7 @@ function getCss(blendTheme: BlendTheme = "blue") {
     }
 
     .title img {
-      height: ${`${baseFontSize * 1.25}`}px;
+      height: ${`${baseFontSize * 1.2}`}px;
     }
 
     .title em,
@@ -189,20 +173,11 @@ function getCss(blendTheme: BlendTheme = "blue") {
         font-family: 'Reckless', sans-serif;
     }
 
-    .date {
-        font-family: 'Reckless', sans-serif;
-        font-size: ${`${baseFontSize * 0.8}`}px;
-        font-style: normal;
-        color: white;
-    }
-
     .author {
-        position: absolute;
-        top: 5vw;
-        right: 5vw;
         display: flex;
         align-items: center;
-        gap: 1vw;
+        margin-top: auto;
+        gap: 2vw;
     }
 
     .author__image {
@@ -212,17 +187,19 @@ function getCss(blendTheme: BlendTheme = "blue") {
         border-radius: 100%;
     }
 
+    .author__prefix {
+        font-size: ${`${baseFontSize * 0.5}`}px;
+        color: ${colorLight};
+    }
+
     .author__name {
-        font-family: 'TTCommonsPro', sans-serif;
-        font-size: ${`${baseFontSize * 0.8}`}px;
-        font-style: normal;
-        color: white;
+        font-size: ${`${baseFontSize * 0.6}`}px;
     }
     `;
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { blendTheme, domain, title, teaserImage, author, authorImage, date, locale } =
+  const { blendTheme, domain, title, teaserImage, author, authorImage } =
     parsedReq;
 
   return `<!DOCTYPE html>
@@ -234,29 +211,18 @@ export function getHtml(parsedReq: ParsedRequest) {
         ${getCss(blendTheme)}
     </style>
     <body>
-        <aside class="aside">
-            <div class="aside__header">
-              <svg class="aside__logo" xmlns="http://www.w3.org/2000/svg" width="50%" viewBox="0 0 137.89 95.31"><defs><style>.cls-1{fill:#fff}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Lager_1" data-name="Lager 1"><path class="cls-1" d="M92.17 26.73a22.86 22.86 0 1 1-22.86 22.86 22.89 22.89 0 0 1 22.86-22.86m0-22.87a45.73 45.73 0 1 0 45.72 45.73A45.74 45.74 0 0 0 92.17 3.86ZM21.54 35.06 0 83.44l24.26 10.8L35 70.12a26.56 26.56 0 0 0-13.46-35.06ZM8.08 0a26.56 26.56 0 0 0 13.46 35.06l10.8-24.26Z"/></g></g></svg>
-              ${domain ? `<p class="aside__heading">${domain}</p>` : ""}
-            </div>
-            ${teaserImage ? getImage(teaserImage, "aside__image") : ""}
-        </aside>
+        <header class="header">
+          <svg class="header__logo" xmlns="http://www.w3.org/2000/svg" width="50%" viewBox="0 0 137.89 95.31"><defs><style>.cls-1{fill:#000}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Lager_1" data-name="Lager 1"><path class="cls-1" d="M92.17 26.73a22.86 22.86 0 1 1-22.86 22.86 22.89 22.89 0 0 1 22.86-22.86m0-22.87a45.73 45.73 0 1 0 45.72 45.73A45.74 45.74 0 0 0 92.17 3.86ZM21.54 35.06 0 83.44l24.26 10.8L35 70.12a26.56 26.56 0 0 0-13.46-35.06ZM8.08 0a26.56 26.56 0 0 0 13.46 35.06l10.8-24.26Z"/></g></g></svg>
+          ${domain ? `<p class="header__title">${domain}</p>` : ""}
+        </header>
+        ${teaserImage ? getImage(teaserImage, "teaserImage") : ""}
         <main class="main">
             <h1 class="title">
             ${emojify(marked(title))}
             </h1>
-            ${
-              date
-                ? `<time class="date" date="${new Date(
-                    date
-                  )}">${new Intl.DateTimeFormat(locale).format(
-                    new Date(date)
-                  )}</time>`
-                : ""
-            }
             <div class="author">
              ${authorImage ? getImage(authorImage, "author__image") : ""}
-             ${author ? `<p class="author__name">${author}</p>` : ""}
+             ${author ? `<div><p class="author__prefix">written by</p><p class="author__name">${author}</p></div>` : ""}
             </div>
         </main>
     </body>
