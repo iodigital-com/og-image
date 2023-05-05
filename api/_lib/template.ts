@@ -153,13 +153,14 @@ function getCss(blendTheme: BlendTheme = "blue") {
     }
 
     .title {
-        font-size: ${`${baseFontSize * 1.2}`}px;
+        font-size: ${`${baseFontSize * 1.4}`}px;
+        line-height: 1.1;
         font-weight: 700;
         hyphens: auto;
         overflow: hidden;
         title-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
